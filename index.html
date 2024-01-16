@@ -1,0 +1,67 @@
+<html>
+<body>
+
+<script>
+// STEP 1: GET PETFINDER ACCESS TOKEN 
+const clientId = "Lvt35RZyaPlsj3yDjX9bBWN7JsK9LT0x6g0OoscAfNqLtHjSj2"
+const clientSecret = "Oa9de8cL8O1XVWycHf4HH0xUxFW2jdI4TkYi3yIB"
+const apiUrl = "https://api.petfinder.com/v2/oauth2/token"
+const formData = new FormData()
+formData.append("grant_type", "client_credentials")
+formData.append("client_id", clientId)
+formData.append("client_secret", clientSecret)
+fetch(apiUrl, {
+  method: "POST",
+  body: formData
+})
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Network response was not ok")
+    }
+    return response.json()
+  })
+  .then(data => {
+    //console.log(data)
+    accessToken = data["access_token"]
+    console.log("token:", accessToken)
+    getNames(accessToken)
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
+
+// STEP 2: GET PET NAMES
+function getNames(accessToken) {
+    const parameter1 = "name"
+    const value1 = "Eric"
+    const apiUrl = `https://api.petfinder.com/v2/animals?${parameter1}=${value1}`
+
+    fetch(apiUrl, {
+    method: "GET",
+    headers: {
+        "Authorization": `Bearer ${accessToken}`
+    }
+    })
+    .then(response => {
+        if (!response.ok) {
+        throw new Error("Network response was not ok")
+        }
+        return response.json()
+    })
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => {
+        console.error("Error:", error)
+    });
+}
+
+// TODO: 
+// * create UI with Bootstrap; 
+// * analyze the petfinder data in some interesting way; 
+// * integrate with another API data (see eg: https://github.com/public-apis/public-apis?tab=readme-ov-file#animals); 
+// * UI should include a user-input form and JavaScript should  dynamically render some output 
+
+</script>
+</body>
+</html>
